@@ -1,0 +1,60 @@
+
+import cv2
+import numpy as np
+from tkinter import Tk, filedialog
+
+# Open file selection window
+root = Tk()
+root.withdraw()
+
+# Select an image
+image_path = filedialog.askopenfilename(
+    title="Select an Image",
+    filetypes=[("Image Files", "*.jpg *.jpeg *.png")]
+)
+
+# Read the input image
+img = cv2.imread(image_path)
+
+if img is None:
+    print("Error: Image not selected or not found!")
+
+else:
+    # Convert image to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Convert grayscale image to binary
+    _, binary = cv2.threshold(
+        gray, 127, 255, cv2.THRESH_BINARY
+    )
+
+    # Create a 5x5 kernel
+    kernel = np.ones((5, 5), np.uint8)
+
+    # Apply dilation operation
+    dilated = cv2.dilate(
+        binary, kernel, iterations=1
+    )
+
+    # Display original image
+    cv2.imshow("Original Image", img)
+
+    # Display binary image
+    cv2.imshow("Binary Image", binary)
+
+    # Display dilated image
+    cv2.imshow("Dilated Image", dilated)
+
+    # Save the output image
+    cv2.imwrite("dilated_image.jpg", dilated)
+
+    print("Dilation Operation Completed Successfully!")
+    print("Output saved as dilated_image.jpg")
+
+    # Wait for key press
+    cv2.waitKey(0)
+
+    # Close all windows
+    cv2.destroyAllWindows()
+
+root.destroy()
